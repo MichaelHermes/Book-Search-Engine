@@ -5,22 +5,6 @@ const { signToken } = require('../utils/auth');
 
 const resolvers = {
 	Query: {
-		// // Get a single user by either their id or their username
-		// user: async (parent, { user = null, params }) => {
-		// 	const foundUser = await User.findOne({
-		// 		$or: [
-		// 			{ _id: user ? user._id : params.id },
-		// 			{ username: params.username },
-		// 		],
-		// 	});
-
-		// 	if (!foundUser) {
-		// 		throw new AuthenticationError('Cannot find a user with this id!');
-		// 	}
-
-		// 	return foundUser;
-		// },
-		// By adding context to our query, we can retrieve the logged in user without specifically searching for them
 		me: async (parent, args, context) => {
 			if (context.user) {
 				return User.findOne({ _id: context.user._id });
