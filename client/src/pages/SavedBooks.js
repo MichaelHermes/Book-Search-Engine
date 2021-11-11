@@ -15,13 +15,11 @@ import { REMOVE_BOOK } from '../utils/mutations';
 
 const SavedBooks = () => {
 	// Setup queries
-	const { data } = useQuery(QUERY_ME);
+	const { loading, data } = useQuery(QUERY_ME);
 	const userData = data?.me || {};
+
 	// Setup mutations
 	const [removeBook] = useMutation(REMOVE_BOOK);
-
-	// use this to determine if `useEffect()` hook needs to run again
-	const userDataLength = Object.keys(userData).length;
 
 	// create function that accepts the book's mongo _id value as param and deletes the book from the database
 	const handleDeleteBook = async bookId => {
@@ -38,14 +36,14 @@ const SavedBooks = () => {
 
 			// upon success, remove book's id from localStorage
 			removeBookId(bookId);
-			window.location.reload();
+			//window.location.reload();
 		} catch (err) {
 			console.error(err);
 		}
 	};
 
 	// if data isn't here yet, say so
-	if (!userDataLength) {
+	if (loading) {
 		return <h2>LOADING...</h2>;
 	}
 
