@@ -1,3 +1,4 @@
+import React from 'react';
 import {
 	Jumbotron,
 	Container,
@@ -8,15 +9,16 @@ import {
 
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
 
 const SavedBooks = () => {
 	// Setup queries
-	const { userData } = useQuery(QUERY_ME);
+	const { data } = useQuery(QUERY_ME);
+	const userData = data?.me || {};
 	// Setup mutations
-	const [removeBook, { error, data }] = useMutation(REMOVE_BOOK);
+	const [removeBook] = useMutation(REMOVE_BOOK);
 
 	// use this to determine if `useEffect()` hook needs to run again
 	const userDataLength = Object.keys(userData).length;
@@ -30,13 +32,13 @@ const SavedBooks = () => {
 		}
 
 		try {
-			const { data } = await removeBook({
+			await removeBook({
 				variables: { bookId: bookId },
 			});
 
-			userData = data;
 			// upon success, remove book's id from localStorage
 			removeBookId(bookId);
+			window.location.reload();
 		} catch (err) {
 			console.error(err);
 		}
